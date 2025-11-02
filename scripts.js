@@ -48,8 +48,8 @@ form.onsubmit = (event) => {
 
 //ADIÇÃO DOS ITENS NA LISTA 
 function expense (newEXPENSE) {
-    console.log("Chamou")
-  //CRIA O ELEMENTO PARA ADD NA LISTA
+    try {
+       //CRIA O ELEMENTO PARA ADD NA LISTA
   const expenseItem = document.createElement('li')
   expenseItem.classList.add('expense')
 
@@ -64,18 +64,28 @@ function expense (newEXPENSE) {
 
   //criando o nome da despesa
   const expenseName = document.createElement("strong")
-  expenseName.textContent(newEXPENSE.expense)
+  expenseName.textContent = newEXPENSE.expense
 
   //criando a categoria da despesa
    const expenseCategory = document.createElement("span")
-   expenseCategory.textContent = (newEXPENSE.category_name)
+   expenseCategory.textContent = newEXPENSE.category_name
 
    //adiciona nome e categoria na div, antes do item 
    expenseInfo.append(expenseName , expenseCategory)
+
+   const expenseAmount = document.createElement("span")
+   expenseAmount.classList.add("expense-amount")
+   expenseAmount.innerHTML = `small>R$</small> ${newEXPENSE.amount}`
    
   //add info no item 
   expenseItem.append(expenseIcon, expenseInfo)
 
     //adiciona os itens na lista
     expensesList.append(expenseItem)
+} catch (error) {
+    alert("Não foi possivel atualizar a lista de despesas.")
+    console.log(error)
+        
+    }
+
 }
