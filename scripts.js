@@ -5,6 +5,10 @@ const expense = document.getElementById('expense')
 const category = document.getElementById('category')
 const expensesList = document.querySelector('ul')
 
+//seleciona elemento do total
+const expensequantity = document.querySelectorAll("aside heades p span")
+const expenseTotal = document.querySelectorAll("aside header h2")
+
 // CAPTURA DO EVENTO E FORMATAR O VALOR
 amount.oninput = () => {
     //CAPTURANDO O VALOR ATUAL DO INPUT E REMOVENDO CARACTERES 
@@ -73,19 +77,70 @@ function expense (newEXPENSE) {
    //adiciona nome e categoria na div, antes do item 
    expenseInfo.append(expenseName , expenseCategory)
 
+   //add valor
    const expenseAmount = document.createElement("span")
    expenseAmount.classList.add("expense-amount")
-   expenseAmount.innerHTML = `small>R$</small> ${newEXPENSE.amount}`
-   
+   expenseAmount.innerHTML = `small>R$</small> ${newEXPENSE.amount.replace("R$ ","")}`
+
+    // add o icone de remover
+    const removeIcon = document.createElement("img")
+    removeIcon.classList.add9("remove-icon")
+    removeIcon.setAttribute("src", "img/remove.svg")
+    removeIcon.setAttribute("alt", "remover")
+
   //add info no item 
-  expenseItem.append(expenseIcon, expenseInfo)
+  expenseItem.append(expenseIcon, expenseInfo, expenseAmount, removeIcon)
 
     //adiciona os itens na lista
     expensesList.append(expenseItem)
+
+    //chama a atualização do total
+    updatetotal()
+
 } catch (error) {
     alert("Não foi possivel atualizar a lista de despesas.")
     console.log(error)
-        
-    }
+}
+}
 
+function updatetotal() {
+    try {
+      //recupera todos os itens (li) da lista (ul)
+      const items = expensesList.children
+     //console.log(items)
+
+        //atualiza a quantidade de itens da lista
+      expensequantity.textContent = ´${items.length} ${items.length > 1 ? "despesa" : "despesas"}´
+
+       //variavel para incrementar o total
+       let total = 0
+
+       //percorrer cada item (li)
+       for(let item = 0; item < items.length; item++) {
+        // vai percorrer cada irtem (li) e busca somente a classe .expense-amount
+        const itemamount = items[item].querySelector(".expense-amount")
+        //console.log(itemamount)
+
+        //agora vamos pegar somente o valor 
+        const value = itemamount.textContent.replace(/[^d,]/g, "").replace(",", ".")
+
+        //converter o valor para float
+        const valueformatted = parseFloat (value)
+       
+        //verificar se realmente é um numero
+        if(!isNaN (valueformatted)) {
+            return alert("Não foi possivel calcular o total. O valor não parece ser um número.")
+        }
+
+        //incrementa o valor TOTAL
+        total += valueformatted // total = total + valueformatted
+       }
+
+      expenseTotal.textContent= total 
+      expenseAmount.innerHTML = ` <small>R$</small> ${formatcurrency(total).replace("R$ ","")}`
+     
+    } catch (error) {
+    console.log(error)
+     alert("não foi possivel atualizar os valores")
+    }
 }
