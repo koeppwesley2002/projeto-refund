@@ -6,7 +6,7 @@ const category = document.getElementById('category')
 const expensesList = document.querySelector('ul')
 
 //seleciona elemento do total
-const expensequantity = document.querySelector("aside header p span")
+const expenseQuantity = document.querySelector("aside header p span")
 const expenseTotal = document.querySelector("aside header h2")
 
 // CAPTURA DO EVENTO E FORMATAR O VALOR
@@ -38,7 +38,7 @@ form.onsubmit = (event) => {
     event.preventDefault()
 
     // CRIA UM OBJETO COM OS DETALHES DA NOSSA DESPESA
-    const newEXPENSE = {
+    const newExpense = {
         id: new Date().getTime(),
         expense: expense.value,
         category_id: category.value,
@@ -47,28 +47,28 @@ form.onsubmit = (event) => {
         creat_at: new Date()
     }
 
-    expenseADD(newEXPENSE)
+    expenseADD(newExpense)
 }
 
 //ADIÇÃO DOS ITENS NA LISTA 
-function expenseADD(newEXPENSE) {
+function expenseADD(newExpense) {
     try {
-       //CRIA O ELEMENTO PARA ADD NA LISTA
+     //CRIA O ELEMENTO PARA ADD NA LISTA
   const expenseItem = document.createElement('li')
   expenseItem.classList.add('expense')
 
   //criando o icone  na categoria
   const expenseIcon = document.createElement('img')
-  expenseIcon.setAttribute("src", `img/${newEXPENSE.category_id}.svg`)
+    expenseIcon.setAttribute("src", `img/${newExpense.category_id}.svg`)
   expenseIcon.setAttribute("alt", newExpense.category_name)
 
-  //criando a info da despesa
-  const expenseInfo = document.createElement('div')
-  expenseName.classList.add('expense-info')
+    //criando a info da despesa
+    const expenseInfo = document.createElement('div')
+    expenseInfo.classList.add('expense-info')
 
-  //criando o nome da despesa
-  const expenseName = document.createElement("strong")
-  expenseName.textContent = newExpense.expense
+    //criando o nome da despesa
+    const expenseName = document.createElement("strong")
+    expenseName.textContent = newExpense.expense
 
   //criando a categoria da despesa
    const expenseCategory = document.createElement("span")
@@ -77,10 +77,10 @@ function expenseADD(newEXPENSE) {
    //adiciona nome e categoria na div, antes do item 
    expenseInfo.append(expenseName, expenseCategory)
 
-   //add valor
-   const expenseAmount = document.createElement("span")
-   expenseAmount.classList.add("expense-amount")
-   expenseAmount.innerHTML = `small>R$</small> ${newExpense.amount.replace("R$ ","")}`
+    //add valor
+    const expenseAmount = document.createElement("span")
+    expenseAmount.classList.add("expense-amount")
+    expenseAmount.innerHTML = `<small>R$</small> ${newExpense.amount.replace("R$ ","")}`
 
     // add o icone de remover
     const removeIcon = document.createElement("img")
@@ -112,8 +112,8 @@ function updatetotal() {
       const items = expensesList.children
      //console.log(items)
 
-        //atualiza a quantidade de itens da lista
-      expenseQuantity.textContent = `${items.length} ${items.length > 1 ? "despesas" : "despesa"}`
+    //atualiza a quantidade de itens da lista
+        expenseQuantity.textContent = `${items.length} ${items.length > 1 ? "despesas" : "despesa"}`
 
 
        //variavel para incrementar o total
@@ -125,16 +125,17 @@ function updatetotal() {
         const itemamount = items[item].querySelector(".expense-amount")
         //console.log(itemamount)
 
-        //agora vamos pegar somente o valor 
-        const value = itemamount.textContent.replace(/[^d,]/g, "").replace(",", ".")
+    //agora vamos pegar somente o valor 
+    const value = itemamount.textContent.replace(/[^\d,]/g, "").replace(",", ".")
 
-        //converter o valor para float
-        const valueformatted = parseFloat (value)
+    //converter o valor para float
+    const valueformatted = parseFloat(value)
        
-        //verificar se realmente é um numero
-        if(!isNaN (valueformatted)) {
-            return alert("Não foi possivel calcular o total. O valor não parece ser um número.")
-        }
+    //verificar se realmente é um numero
+    if(isNaN(valueformatted)) {
+      alert("Não foi possivel calcular o total. O valor não parece ser um número.")
+      return
+    }
 
         //incrementa o valor TOTAL
         total += valueformatted // total = total + valueformatted
@@ -146,7 +147,7 @@ function updatetotal() {
       const symbol = document.createElement("small")
       symbol.textContent = "R$"
 
-      total = formatcurrencyBRL(total).replace("R$ ","")
+  total = formatcurrency(total).replace("R$ ","")
       expenseTotal.innerHTML = ""
       expenseTotal.append(symbol, total)
      
@@ -156,13 +157,13 @@ function updatetotal() {
     }
 }
 
-expensesList.addEventListener("click", function() {
+expensesList.addEventListener("click", function(event) {
     //console.log(event)
 
     if(event.target.classList.contains("remove-icon")) {
         //obter a lista pai do elemento clicado
-        const item = Event.target.closest(".expense")
-        item.remove()
+        const item = event.target.closest(".expense")
+        if (item) item.remove()
     }
 
     updatetotal()
