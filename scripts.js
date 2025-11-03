@@ -6,8 +6,8 @@ const category = document.getElementById('category')
 const expensesList = document.querySelector('ul')
 
 //seleciona elemento do total
-const expensequantity = document.querySelectorAll("aside heades p span")
-const expenseTotal = document.querySelectorAll("aside header h2")
+const expensequantity = document.querySelector("aside header p span")
+const expenseTotal = document.querySelector("aside header h2")
 
 // CAPTURA DO EVENTO E FORMATAR O VALOR
 amount.oninput = () => {
@@ -51,7 +51,7 @@ form.onsubmit = (event) => {
 }
 
 //ADIÇÃO DOS ITENS NA LISTA 
-function expense (newEXPENSE) {
+function expenseADD(newEXPENSE) {
     try {
        //CRIA O ELEMENTO PARA ADD NA LISTA
   const expenseItem = document.createElement('li')
@@ -60,33 +60,33 @@ function expense (newEXPENSE) {
   //criando o icone  na categoria
   const expenseIcon = document.createElement('img')
   expenseIcon.setAttribute("src", `img/${newEXPENSE.category_id}.svg`)
-  expenseIcon.setAttribute("alt", newEXPENSE.category_name)
+  expenseIcon.setAttribute("alt", newExpense.category_name)
 
   //criando a info da despesa
   const expenseInfo = document.createElement('div')
-  expenseInfo.classList.add('expense-info')
+  expenseName.classList.add('expense-info')
 
   //criando o nome da despesa
   const expenseName = document.createElement("strong")
-  expenseName.textContent = newEXPENSE.expense
+  expenseName.textContent = newExpense.expense
 
   //criando a categoria da despesa
    const expenseCategory = document.createElement("span")
-   expenseCategory.textContent = newEXPENSE.category_name
+   expenseCategory.textContent = newExpense.category_name
 
    //adiciona nome e categoria na div, antes do item 
-   expenseInfo.append(expenseName , expenseCategory)
+   expenseInfo.append(expenseName, expenseCategory)
 
    //add valor
    const expenseAmount = document.createElement("span")
    expenseAmount.classList.add("expense-amount")
-   expenseAmount.innerHTML = `small>R$</small> ${newEXPENSE.amount.replace("R$ ","")}`
+   expenseAmount.innerHTML = `small>R$</small> ${newExpense.amount.replace("R$ ","")}`
 
     // add o icone de remover
     const removeIcon = document.createElement("img")
-    removeIcon.classList.add9("remove-icon")
-    removeIcon.setAttribute("src", "img/remove.svg")
-    removeIcon.setAttribute("alt", "remover")
+    removeIcon.classList.add("remove-icon")
+    removeIcon.setAttribute("src","img/remove.svg")
+    removeIcon.setAttribute("alt","remover")
 
   //add info no item 
   expenseItem.append(expenseIcon, expenseInfo, expenseAmount, removeIcon)
@@ -96,6 +96,9 @@ function expense (newEXPENSE) {
 
     //chama a atualização do total
     updatetotal()
+
+    //limpa o for
+    formclear()
 
 } catch (error) {
     alert("Não foi possivel atualizar a lista de despesas.")
@@ -110,7 +113,8 @@ function updatetotal() {
      //console.log(items)
 
         //atualiza a quantidade de itens da lista
-      expensequantity.textContent = ´${items.length} ${items.length > 1 ? "despesa" : "despesas"}´
+      expenseQuantity.textContent = `${items.length} ${items.length > 1 ? "despesas" : "despesa"}`
+
 
        //variavel para incrementar o total
        let total = 0
@@ -136,11 +140,38 @@ function updatetotal() {
         total += valueformatted // total = total + valueformatted
        }
 
-      expenseTotal.textContent= total 
-      expenseAmount.innerHTML = ` <small>R$</small> ${formatcurrency(total).replace("R$ ","")}`
+      //expenseTotal.textContent= total
+      //expenseAmount.innerHTML = ` <small>R$</small> ${String(total).replace(".", ",")}`
+
+      const symbol = document.createElement("small")
+      symbol.textContent = "R$"
+
+      total = formatcurrencyBRL(total).replace("R$ ","")
+      expenseTotal.innerHTML = ""
+      expenseTotal.append(symbol, total)
      
     } catch (error) {
     console.log(error)
      alert("não foi possivel atualizar os valores")
     }
 }
+
+expensesList.addEventListener("click", function() {
+    //console.log(event)
+
+    if(event.target.classList.contains("remove-icon")) {
+        //obter a lista pai do elemento clicado
+        const item = Event.target.closest(".expense")
+        item.remove()
+    }
+
+    updatetotal()
+    })
+
+    function formclear() {
+        expense.value = ""
+        category.value = ""
+        amount.value = ""
+
+        expense.focus()
+    }
